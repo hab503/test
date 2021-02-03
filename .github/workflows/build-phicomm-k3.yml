@@ -92,7 +92,7 @@ jobs:
         # 复制k3wifih
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
         # 复制upx
-        cp -r -f others/phicomm-k3/tools/upx openwrt/tools
+        cp -r -f others/tools/* openwrt/tools
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
