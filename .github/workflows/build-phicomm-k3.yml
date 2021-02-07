@@ -91,8 +91,9 @@ jobs:
         cp -f others/phicomm-k3/Makefile openwrt/target/linux/bcm53xx/image/Makefile
         # 复制k3wifih
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
-        # 复制upx
+        # 复制补丁
         cp -r -f others/tools/* openwrt/tools
+        cp -r -f others/target/* openwrt/target
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
