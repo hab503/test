@@ -93,7 +93,8 @@ jobs:
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
         # 复制补丁
         cp -r -f others/tools/* openwrt/tools
-        cp -r -f others/target/* openwrt/target
+        # sfe补丁
+        # cp -r -f others/target/* openwrt/target
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
