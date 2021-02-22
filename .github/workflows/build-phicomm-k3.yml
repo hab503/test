@@ -67,8 +67,8 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
 # 出问题时可以选上试试
-    - name: 完全清理
-      run: cd openwrt && make distclean
+#    - name: 完全清理
+#      run: cd openwrt && make distclean
 
     - name: 加载自定义提要
       run: |
@@ -119,6 +119,8 @@ jobs:
       run: |
         # libncursesw6
         cp -f others/package/libs/ncurses/Makefile openwrt/package/libs/ncurses/Makefile
+        # 修改luci-app-baidupcs-web显示的位置
+        cp -f others/test/luci-app-baidupcs-web/luasrc/view/baidupcs-web/baidupcs-web_status.htm openwrt/feeds/leanp/package/lean/luci-app-baidupcs-web/luasrc/view/baidupcs-web/baidupcs-web_status.htm
 
     - name: 编译固件
       id: compile
