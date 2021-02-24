@@ -154,7 +154,8 @@ jobs:
           rm -rf $(find openwrt/bin/targets/ -type d -name "packages")
           # cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
           # cp -p $(find openwrt/bin/targets/*/generic/*phicomm-k3* -type f) openwrt/artifact/firmware/
-          cp -p $(find openwrt/bin/targets/*/generic/*k3* -type f) openwrt/artifact/firmware/
+          # cp -p $(find openwrt/bin/targets/*/generic/*k3* -type f) openwrt/artifact/firmware/
+          cp -p $(find openwrt/bin/targets/*/*k3* -type f) openwrt/artifact/firmware/
           cp -rf $(find openwrt/bin/packages/ -type f -name "*.ipk") openwrt/artifact/package/
           cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") openwrt/artifact/buildinfo/
           # cp -rf $(find openwrt/files -type f) openwrt/artifact/buildinfo/
