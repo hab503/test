@@ -124,6 +124,7 @@ jobs:
         # 修改luci-app-baidupcs-web显示的位置
         cp -f others/test/luci-app-baidupcs-web/luasrc/view/baidupcs-web/baidupcs-web_status.htm openwrt/feeds/leanp/package/lean/luci-app-baidupcs-web/luasrc/view/baidupcs-web/baidupcs-web_status.htm
         # 
+        sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
         cp -r -f others/phicomm-k3/target/linux/bcm53xx/patches-5.10 openwrt/target/linux/bcm53xx/
 
     - name: 编译固件
