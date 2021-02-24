@@ -89,6 +89,8 @@ jobs:
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
         # 去除其他机型
         cp -f others/phicomm-k3/Makefile openwrt/target/linux/bcm53xx/image/Makefile
+        # 修改K3内核
+        cp -f others/phicomm-k3/target/linux/bcm53xx/Makefile openwrt/target/linux/bcm53xx/Makefile
         # 复制k3wifih
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
         # 复制补丁
