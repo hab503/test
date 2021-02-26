@@ -67,8 +67,8 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
 # 出问题时可以选上试试
-    - name: 完全清理
-      run: cd openwrt && make distclean
+#    - name: 完全清理
+#      run: cd openwrt && make distclean
 
     - name: 加载自定义提要
       run: |
@@ -92,7 +92,7 @@ jobs:
         # 修改K3内核
         # cp -f others/phicomm-k3/target/linux/bcm53xx/Makefile openwrt/target/linux/bcm53xx/Makefile
         # cp -f others/phicomm-k3/target/linux/bcm53xx/config-5.10 openwrt/target/linux/bcm53xx/config-5.10
-        sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
+        # sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
         # 复制k3wifih
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
         # 复制补丁
@@ -158,8 +158,8 @@ jobs:
           rm -rf $(find openwrt/bin/targets/ -type d -name "packages")
           # cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
           # cp -p $(find openwrt/bin/targets/*/generic/*phicomm-k3* -type f) openwrt/artifact/firmware/
-          # cp -p $(find openwrt/bin/targets/*/generic/*k3* -type f) openwrt/artifact/firmware/
-          cp -p $(find openwrt/bin/targets/*/*k3* -type f) openwrt/artifact/firmware/
+          cp -p $(find openwrt/bin/targets/*/generic/*k3* -type f) openwrt/artifact/firmware/
+          # cp -p $(find openwrt/bin/targets/*/*k3* -type f) openwrt/artifact/firmware/
           cp -rf $(find openwrt/bin/packages/ -type f -name "*.ipk") openwrt/artifact/package/
           cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") openwrt/artifact/buildinfo/
           # cp -rf $(find openwrt/files -type f) openwrt/artifact/buildinfo/
