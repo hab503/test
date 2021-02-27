@@ -128,7 +128,7 @@ jobs:
         # 
         # sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
         # cp -r -f others/phicomm-k3/target/linux/bcm53xx/patches-5.10 openwrt/target/linux/bcm53xx/
-        sudo rm -rf openwrt/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch
+        # sudo rm -rf openwrt/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch
         # cp -r -f others/phicomm-k3/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch openwrt/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch
 
     - name: 编译固件
