@@ -97,6 +97,10 @@ jobs:
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
         # 复制补丁
         cp -r -f others/tools/* openwrt/tools
+        # 更新golang版本
+        pushd openwrt/feeds/packages/lang
+        rm -rf golang && svn co https://github.com/openwrt/packages/trunk/lang/golang
+        popd
         # sfe补丁
         # cp -r -f others/target/* openwrt/target
         chmod +x $DIY_P2_SH
