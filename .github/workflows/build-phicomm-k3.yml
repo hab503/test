@@ -67,8 +67,8 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
 # 出问题时可以选上试试
-#    - name: 完全清理
-#      run: cd openwrt && make distclean
+    - name: 完全清理
+      run: cd openwrt && make distclean
 
     - name: 加载自定义提要
       run: |
@@ -129,6 +129,8 @@ jobs:
         cp -f others/package/libs/ncurses/Makefile openwrt/package/libs/ncurses/Makefile
         # 修改luci-app-baidupcs-web显示的位置
         cp -f -r others/test/luci-app-baidupcs-web/* openwrt/feeds/leanp/package/lean/luci-app-baidupcs-web
+        # 
+        cp -f others/test/v2ray-plugin/patches/001-replace-incompatible.patch openwrt/feeds/passwall/v2ray-plugin/patches/001-replace-incompatible.patch
         # 
         # sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
         # cp -r -f others/phicomm-k3/target/linux/bcm53xx/patches-5.10 openwrt/target/linux/bcm53xx/
