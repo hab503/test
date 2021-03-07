@@ -1,10 +1,9 @@
 # openwrt/target/linux/bcm53xx/image/Makefile
 # 去除其他机型，只编译phicomm-k3
+# SPDX-License-Identifier: GPL-2.0-only
+#
 # Copyright (C) 2013 OpenWrt.org
-#
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-#
+
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/image.mk
 
@@ -118,8 +117,7 @@ IEEE8021X := wpad-basic-wolfssl
 B43 := $(IEEE8021X) kmod-b43
 BRCMFMAC_43602A1 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-43602a1-pcie
 BRCMFMAC_4366B1 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-4366b1-pcie
-# BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-4366c0-pcie
-BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac
+BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-4366c0-pcie
 USB2_PACKAGES := kmod-usb-ohci kmod-usb2 kmod-phy-bcm-ns-usb2
 USB2_PACKAGES += kmod-usb-ledtrig-usbport
 USB3_PACKAGES := $(USB2_PACKAGES) kmod-usb3 kmod-phy-bcm-ns-usb3
@@ -134,7 +132,7 @@ define Device/Default
   KERNEL_INITRAMFS := kernel-bin | append-dtb | lzma-d16 | trx
   FILESYSTEMS := squashfs
   KERNEL_NAME := zImage
-  IMAGE_NAME = $$(IMAGE_PREFIX)-$$(1).$$(2)
+  DEVICE_IMG_NAME = $$(DEVICE_IMG_PREFIX)-$$(1).$$(2)
   IMAGES := trx
   BLOCKSIZE := 128k
   PAGESIZE := 2048
@@ -144,7 +142,8 @@ endef
 define Device/phicomm_k3
   DEVICE_VENDOR := PHICOMM
   DEVICE_MODEL := K3
-  DEVICE_PACKAGES := $(BRCMFMAC_4366C0) $(USB3_PACKAGES) k3wifih
+  # DEVICE_PACKAGES := $(BRCMFMAC_4366C0) $(USB3_PACKAGES) k3wifih
+  DEVICE_PACKAGES := $(BRCMFMAC_4366C0) $(USB3_PACKAGES)
   IMAGES := trx
 endef
 TARGET_DEVICES += phicomm_k3
