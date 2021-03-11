@@ -10,6 +10,8 @@ https://github.com/xiaorouji/openwrt-passwall
 
 https://github.com/Hill-98/phicommk3-firmware
 
+https://github.com/destan19/OpenAppFilter
+
 # Actions-OpenWrt
 
 [![LICENSE](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square&label=LICENSE)](https://github.com/P3TERX/Actions-OpenWrt/blob/master/LICENSE)
