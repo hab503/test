@@ -67,8 +67,18 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
 # 出问题时可以选上试试
-#    - name: 完全清理
-#      run: cd openwrt && make distclean
+    - name: 完全清理
+      run: cd openwrt && make distclean
+#      run: cd openwrt && make dirclean
+#      make tools/libelf/clean
+# 清理编译
+# make clean
+# 删除目录的内容 / bin和 / build_dir，不移除工具链, 它还避免了清洗架构/目标
+# make dirclean
+# 是删除build-dir和staging-dir tmp
+# make distclean
+# 删除一切编译或配置和所有下载内容提要和包的来源。
+# 谨慎 :除了一切,这将 消除您的构建配置( < buildroot_dir > / config ) ,你的工具链和所有其他来源。 小心使用!
 
     - name: 加载自定义提要
       run: |
