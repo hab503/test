@@ -111,9 +111,10 @@ jobs:
         pushd openwrt/feeds/packages/lang
         rm -rf golang && svn co https://github.com/openwrt/packages/trunk/lang/golang
         popd
-        # fakeroot
+        # fakeroot/zstd
         pushd openwrt/tools
         svn co https://github.com/openwrt/openwrt/trunk/tools/fakeroot
+        svn co https://github.com/openwrt/openwrt/trunk/tools/zstd
         popd
         sed -i 's/@DEBIAN/http:\/\/ftp.debian.org\/debian/g' openwrt/tools/fakeroot/Makefile
         chmod +x $DIY_P2_SH
