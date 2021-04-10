@@ -111,6 +111,10 @@ jobs:
         pushd openwrt/feeds/packages/lang
         rm -rf golang && svn co https://github.com/openwrt/packages/trunk/lang/golang
         popd
+        # fakeroot
+        pushd openwrt/tools
+        svn co https://github.com/openwrt/openwrt/trunk/tools/fakeroot
+        popd
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
