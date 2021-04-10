@@ -115,6 +115,7 @@ jobs:
         pushd openwrt/tools
         svn co https://github.com/openwrt/openwrt/trunk/tools/fakeroot
         popd
+        sed -i 's/@DEBIAN/http:\/\/ftp.debian.org\/debian/g' openwrt/tools/fakeroot/Makefile
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
