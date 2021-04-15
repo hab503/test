@@ -89,6 +89,13 @@ jobs:
 
     - name: 更新提要
       run: cd openwrt && ./scripts/feeds update -a
+      
+# 删除某些重复程序
+    - name: 删除某些重复程序
+      run: |
+        pushd openwrt/feeds/leanp/package/lean
+        rm -rf v2ray-plugin
+        popd
 
     - name: 安装提要
       run: cd openwrt && ./scripts/feeds install -a
