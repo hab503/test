@@ -67,8 +67,8 @@ jobs:
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         
 # 出问题时可以选上试试
-#    - name: 完全清理
-#      run: cd openwrt && make distclean
+    - name: 完全清理
+      run: cd openwrt && make distclean
 #      run: cd openwrt && make dirclean
 #      make tools/libelf/clean
 # 清理编译
