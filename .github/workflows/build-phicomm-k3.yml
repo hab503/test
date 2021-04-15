@@ -105,14 +105,6 @@ jobs:
         # sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
         # 复制k3wifih
         cp -r -f others/phicomm-k3/k3wifih openwrt/package
-        # 复制补丁
-        cp -r -f others/tools/* openwrt/tools
-        # 更新golang版本
-        pushd openwrt/feeds/packages/lang
-        rm -rf golang && svn co https://github.com/openwrt/packages/trunk/lang/golang
-        popd
-        # sfe补丁
-        # cp -r -f others/target/* openwrt/target
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
@@ -133,20 +125,26 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
         
-    - name: 加载测试补丁
+    - name: 加载测试
       run: |
         # libncursesw6
-        cp -f others/package/libs/ncurses/Makefile openwrt/package/libs/ncurses/Makefile
+        # cp -f others/package/libs/ncurses/Makefile openwrt/package/libs/ncurses/Makefile
+        sed -i '/PROVIDES:=libncursesw/s/libncursesw/libncursesw libncursesw6/g' openwrt/package/libs/ncurses/Makefile
+        # 更新golang版本
+        pushd openwrt/feeds/packages/lang
+        rm -rf golang && svn co https://github.com/openwrt/packages/trunk/lang/golang
+        popd
+        # 复制补丁
+        # cp -r -f others/tools/* openwrt/tools
+        # libelf
+        pushd openwrt/tools
+        svn co https://github.com/coolsnowwolf/lede/trunk/tools/libelf
+        popd
+        sed -i '59a\$(curdir)\/libelf\/compile := $(curdir)\/libtool\/compile' openwrt/tools/Makefile
+        sed -i 's/expat gmp mpc mpfr/expat gmp mpc mpfr libelf/g' openwrt/tools/Makefile
         # 修改luci-app-baidupcs-web显示的位置
         cp -f -r others/test/luci-app-baidupcs-web/* openwrt/feeds/leanp/package/lean/luci-app-baidupcs-web
-        # 
-        # cp -f others/test/v2ray-plugin/patches/001-replace-incompatible.patch openwrt/feeds/passwall/v2ray-plugin/patches/001-replace-incompatible.patch
-        # 
-        # sudo rm -rf openwrt/target/linux/bcm53xx/patches-5.10
-        # cp -r -f others/phicomm-k3/target/linux/bcm53xx/patches-5.10 openwrt/target/linux/bcm53xx/
-        # sudo rm -rf openwrt/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch
-        # cp -r -f others/phicomm-k3/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch openwrt/target/linux/generic/hack-5.10/773-bgmac-add-srab-switch.patch
-
+        
     - name: 编译固件
       id: compile
       run: |
