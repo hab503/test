@@ -36,7 +36,7 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/lib
 	$(INSTALL_DIR) $(1)/lib/firmware
 	$(INSTALL_DIR) $(1)/lib/firmware/brcm
-	$(INSTALL_DATA) ./files/lib/firmware/brcm/brcmfmac4366c-pcie.bin.69027 $(1)/lib/firmware/brcm/brcmfmac4366c-pcie.bin
+	$(INSTALL_DATA) ./files/lib/firmware/brcm/brcmfmac4366c-pcie.bin.69027 $(1)/lib/firmware/brcm/brcmfmac4366c-pcie.bin.1
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
