@@ -117,8 +117,8 @@ IEEE8021X := wpad-basic-wolfssl
 B43 := $(IEEE8021X) kmod-b43
 BRCMFMAC_43602A1 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-43602a1-pcie
 BRCMFMAC_4366B1 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-4366b1-pcie
-# BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-4366c0-pcie
-BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac
+BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac brcmfmac-firmware-4366c0-pcie
+# BRCMFMAC_4366C0 := $(IEEE8021X) kmod-brcmfmac
 USB2_PACKAGES := kmod-usb-ohci kmod-usb2 kmod-phy-bcm-ns-usb2
 USB2_PACKAGES += kmod-usb-ledtrig-usbport
 USB3_PACKAGES := $(USB2_PACKAGES) kmod-usb3 kmod-phy-bcm-ns-usb3
@@ -143,7 +143,7 @@ endef
 define Device/phicomm_k3
   DEVICE_VENDOR := PHICOMM
   DEVICE_MODEL := K3
-  DEVICE_PACKAGES := $(BRCMFMAC_4366C0) $(USB3_PACKAGES) k3wifi
+  DEVICE_PACKAGES := $(BRCMFMAC_4366C0) $(USB3_PACKAGES) k3wifih
   # DEVICE_PACKAGES := $(BRCMFMAC_4366C0) $(USB3_PACKAGES)
   IMAGES := trx
 endef
