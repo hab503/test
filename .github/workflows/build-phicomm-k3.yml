@@ -141,7 +141,7 @@ jobs:
         # cp -r -f others/tools/* openwrt/tools
         # libelf
         pushd openwrt/tools
-        rm -rf libelf && svn co https://github.com/coolsnowwolf/lede/trunk/tools/libelf
+        rm -rf libelf && svn co https://github.com/hab503/lede/trunk/tools/libelf
         popd
         sed -i '59a\$(curdir)\/libelf\/compile := $(curdir)\/libtool\/compile' openwrt/tools/Makefile
         sed -i 's/expat gmp mpc mpfr/expat gmp mpc mpfr libelf/g' openwrt/tools/Makefile
