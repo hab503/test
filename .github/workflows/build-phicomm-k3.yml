@@ -141,16 +141,16 @@ jobs:
         # cp -r -f others/tools/* openwrt/tools
         # libelf
         pushd openwrt/tools
-        svn co https://github.com/coolsnowwolf/lede/trunk/tools/libelf
+        rm -rf libelf && svn co https://github.com/coolsnowwolf/lede/trunk/tools/libelf
         popd
         sed -i '59a\$(curdir)\/libelf\/compile := $(curdir)\/libtool\/compile' openwrt/tools/Makefile
         sed -i 's/expat gmp mpc mpfr/expat gmp mpc mpfr libelf/g' openwrt/tools/Makefile
         # ucl 、 upx
         pushd openwrt/tools
-        svn co https://github.com/coolsnowwolf/lede/trunk/tools/ucl
+        rm -rf ucl && svn co https://github.com/coolsnowwolf/lede/trunk/tools/ucl
         popd
         pushd openwrt/tools
-        svn co https://github.com/coolsnowwolf/lede/trunk/tools/upx
+        rm -rf upx && svn co https://github.com/coolsnowwolf/lede/trunk/tools/upx
         popd
         sed -i '29a\tools-y += ucl upx' openwrt/tools/Makefile
         sed -i '40a\$(curdir)\/upx\/compile := $(curdir)\/ucl\/compile' openwrt/tools/Makefile
