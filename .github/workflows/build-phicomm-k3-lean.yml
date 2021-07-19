@@ -1,0 +1,220 @@
+#
+# Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+#
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/P3TERX/Actions-OpenWrt
+# Description: Build OpenWrt using GitHub Actions
+#
+
+name: Build OpenWrt Lean
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+#  schedule:
+#    - cron: 0 8 * * 5
+
+env:
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: phicomm-k3-lean.config
+  DIY_P1_SH: phicomm-k3-lean.diy-part1.sh
+  DIY_P2_SH: phicomm-k3.diy-part2.sh
+  wifi_firmware: firmware-master/phicomm-k3/brcmfmac4366c-pcie.bin.69027
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
+  UPLOAD_RELEASE: false
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: 初始化环境
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
+        # sudo -E apt-get -qq install subversion
+        sudo -E apt-get -y install upx
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+
+    - name: 克隆源代码
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        
+# 出问题时可以选上试试
+#    - name: 完全清理
+#      run: cd openwrt && make distclean
+#      run: cd openwrt && make dirclean
+#      make tools/libelf/clean
+# 清理编译
+# make clean
+# 删除目录的内容 / bin和 / build_dir，不移除工具链, 它还避免了清洗架构/目标
+# make dirclean
+# 是删除build-dir和staging-dir tmp
+# make distclean
+# 删除一切编译或配置和所有下载内容提要和包的来源。
+# 谨慎 :除了一切,这将 消除您的构建配置( < buildroot_dir > / config ) ,你的工具链和所有其他来源。 小心使用!
+
+    - name: 加载自定义提要
+      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        chmod +x $DIY_P1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P1_SH
+
+    - name: 更新提要
+      run: cd openwrt && ./scripts/feeds update -a
+
+    - name: 安装提要
+      run: cd openwrt && ./scripts/feeds install -a
+
+    - name: 加载自定义配置
+      run: |
+        [ -e files ] && mv -f files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        # 去除其他机型
+        cp -f others/phicomm-k3/Makefile openwrt/target/linux/bcm53xx/image/Makefile
+        # 复制k3wifih
+        cp -r -f others/phicomm-k3/k3wifih openwrt/package
+        chmod +x $DIY_P2_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_P2_SH
+
+    - name: SSH连接到操作
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+    - name: 下载包
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+        
+    - name: 加载测试
+      run: |
+        # libncursesw6
+        # cp -f others/package/libs/ncurses/Makefile openwrt/package/libs/ncurses/Makefile
+        # sed -i '/PROVIDES:=libncursesw/s/libncursesw/libncursesw libncursesw6/g' openwrt/package/libs/ncurses/Makefile
+        # 更新golang版本
+        # pushd openwrt/feeds/packages/lang
+        # rm -rf golang && svn co https://github.com/openwrt/packages/trunk/lang/golang
+        # popd
+        # 复制补丁
+        # cp -r -f others/tools/* openwrt/tools
+        # libelf
+        # pushd openwrt/tools
+        # rm -rf libelf && svn co https://github.com/hab503/lede/trunk/tools/libelf
+        # popd
+        # sed -i '59a\$(curdir)\/libelf\/compile := $(curdir)\/libtool\/compile' openwrt/tools/Makefile
+        # sed -i 's/expat gmp mpc mpfr/expat gmp mpc mpfr libelf/g' openwrt/tools/Makefile
+        # ucl 、 upx
+        # pushd openwrt/tools
+        # rm -rf ucl && svn co https://github.com/coolsnowwolf/lede/trunk/tools/ucl
+        # popd
+        # pushd openwrt/tools
+        # rm -rf upx && svn co https://github.com/coolsnowwolf/lede/trunk/tools/upx
+        # popd
+        # sed -i '29a\tools-y += ucl upx' openwrt/tools/Makefile
+        # sed -i '40a\$(curdir)\/upx\/compile := $(curdir)\/ucl\/compile' openwrt/tools/Makefile
+        # 修改luci-app-baidupcs-web显示的位置
+        cp -f -r others/test/luci-app-baidupcs-web/* openwrt/package/lean/luci-app-baidupcs-web
+        
+    - name: 编译固件
+      id: compile
+      run: |
+        cd openwrt
+        # echo -e "$(nproc) thread compile"
+        # make -j$(nproc) || make -j1 || make -j1 V=s
+        make -j1 V=s
+        # make -j$(nproc) V=s
+        # 单独编译某个模块
+        # make package/luci-app-passwall/compile -j1 V=s
+        echo "::set-output name=status::success"
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+    - name: 检查空间使用情况
+      if: (!cancelled())
+      run: df -hT
+
+    - name: Prepare artifact
+      run: |
+          mkdir -p openwrt/artifact/firmware
+          mkdir -p openwrt/artifact/package
+          mkdir -p openwrt/artifact/buildinfo
+          rm -rf $(find openwrt/bin/targets/ -type d -name "packages")
+          # cp -rf $(find ./bin/targets/ -type f) ./artifact/firmware/
+          # cp -p $(find openwrt/bin/targets/*/generic/*phicomm-k3* -type f) openwrt/artifact/firmware/
+          cp -p $(find openwrt/bin/targets/*/generic/*k3* -type f) openwrt/artifact/firmware/
+          # cp -p $(find openwrt/bin/targets/*/*k3* -type f) openwrt/artifact/firmware/
+          cp -rf $(find openwrt/bin/packages/ -type f -name "*.ipk") openwrt/artifact/package/
+          cp -rf $(find openwrt/bin/targets/ -type f -name "*.buildinfo" -o -name "*.manifest") openwrt/artifact/buildinfo/
+          # cp -rf $(find openwrt/files -type f) openwrt/artifact/buildinfo/
+          cp -p $(find openwrt/.config -type f) openwrt/artifact/buildinfo/
+
+    - name: Deliver buildinfo
+      uses: actions/upload-artifact@v2
+      with:
+          name: OpenWrt_buildinfo
+          path: openwrt/artifact/buildinfo/
+
+    - name: Deliver package
+      uses: actions/upload-artifact@v2
+      with:
+          name: OpenWrt_package
+          path: openwrt/artifact/package/
+
+    - name: Deliver firmware
+      uses: actions/upload-artifact@v2
+      with:
+          name: OpenWrt_firmware
+          #path: ./bin/targets/
+          path: openwrt/artifact/firmware/
+          #path: path/**/[abc]rtifac?/*
+
+    - name: Upload release asset
+      if: github.event == 'release'
+      uses: svenstaro/upload-release-action@v2
+      with:
+          repo_token: ${{ secrets.YOURTOKEN }}
+          file: openwrt/artifact/firmware/*
+          tag: ${{ github.ref }}
+          file_glob: true
+  
+    - name: 清理上传目录
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf openwrt/artifact/firmware/* openwrt/artifact/package/* openwrt/artifact/buildinfo/*
